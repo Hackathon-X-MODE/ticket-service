@@ -38,7 +38,7 @@ public class TicketOrderReceiverService {
                             .setProcessed(false)
                             .setCommentId(commentId)
             );
-            log.info("Comment {} attached", commentId);
+            log.info("Comment {} attached to {}", commentId, ticket.getId());
         }
     }
 }
