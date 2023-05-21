@@ -67,7 +67,6 @@ public class PendingTicketStatusHandler implements TicketStatusHandler {
         }
 
 
-
         //Processing Entity... fill resolutions
         notProcessedComments.forEach(notProcessedComment -> {
 
@@ -96,7 +95,7 @@ public class PendingTicketStatusHandler implements TicketStatusHandler {
 
 
         this.webHookService.sendPayload(
-                comments.stream().map(comment ->
+                comments.stream().flatMap(comment ->
                                 this.commentOwnerProblems(comment.getId(), submitTicketDto).stream().map(commentOwnerProblem ->
                                         WebHookPayload.builder()
                                                 .url(vendorContext.webHookFor(commentOwnerProblem))
@@ -105,7 +104,8 @@ public class PendingTicketStatusHandler implements TicketStatusHandler {
                                                 .comment(comment.getComment())
                                                 .problem(commentOwnerProblem)
                                                 .build()
-                                ).toList())
+                                )
+                        )
                         .toList()
         );
     }
