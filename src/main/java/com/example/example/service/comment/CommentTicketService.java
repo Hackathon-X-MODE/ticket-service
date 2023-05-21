@@ -1,6 +1,7 @@
 package com.example.example.service.comment;
 
 import com.example.example.domain.CommentAttachmentOrderTicket;
+import com.example.example.domain.CommentStatus;
 import com.example.example.domain.TicketStatus;
 import com.example.example.exception.EntityNotFoundException;
 import com.example.example.model.CommentOwnerProblem;
@@ -35,6 +36,11 @@ public class CommentTicketService {
                 .map(resolution -> resolution.setResolved(true));
 
         if (resolutions.stream().allMatch(CommentAttachmentOrderTicket.CommentOwnerProblemResolution::isResolved)) {
+            comment.setStatus(CommentStatus.COMPLETED);
+        }
+
+
+        if (ticket.getComments().stream().allMatch(commentD -> commentD.getStatus() == CommentStatus.COMPLETED)) {
             this.ticketStatusService.changeStatus(ticket, SubmitTicketDto.builder().build(), TicketStatus.COMPLETED);
         }
     }
