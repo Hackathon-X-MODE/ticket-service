@@ -2,6 +2,7 @@ package com.example.example.service;
 
 import com.example.example.client.CommentClient;
 import com.example.example.domain.CommentAttachmentOrderTicket;
+import com.example.example.domain.CommentStatus;
 import com.example.example.model.comment.CommentMood;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +18,7 @@ public class TicketOrderReceiverService {
 
     private final CommentClient commentClient;
 
-    private final TickerOrderService tickerOrderService;
+    private final TicketOrderService ticketOrderService;
 
     @Transactional
     public void register(UUID commentId) {
@@ -29,13 +30,13 @@ public class TicketOrderReceiverService {
             return;
         }
 
-        final var ticket = this.tickerOrderService.get(comment.getOrderId());
+        final var ticket = this.ticketOrderService.getDto(comment.getOrderId());
 
         if (ticket.getComments().stream().noneMatch(commentTicket -> commentTicket.getCommentId().equals(commentId))) {
             ticket.getComments().add(
                     new CommentAttachmentOrderTicket()
                             .setTicket(ticket)
-                            .setProcessed(false)
+                            .setStatus(CommentStatus.NOT_PROCESSED)
                             .setCommentId(commentId)
             );
             log.info("Comment {} attached to {}", commentId, ticket.getId());

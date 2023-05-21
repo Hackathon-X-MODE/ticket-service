@@ -15,5 +15,10 @@ public interface OrderTicketMapper {
 
 
     @Mapping(target = "id", source = "commentId")
+    @Mapping(target = "problemOwners", ignore = true)
+    @Mapping(target = "commentOwnerProblemResolutions", source = "commentOwnerProblemResolutions")
     CommentAttachDto toDto(CommentAttachmentOrderTicket commentAttachmentOrderTicket);
+
+
+
 }

@@ -1,14 +1,13 @@
 package com.example.example.client;
 
 import com.example.example.model.comment.CommentDto;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class CommentClient {
@@ -30,6 +29,20 @@ public class CommentClient {
                 .uri(uriBuilder -> uriBuilder.path("/{commentId}").build(commentId))
                 .retrieve()
                 .bodyToMono(CommentDto.class)
+                .block());
+    }
+
+    public List<CommentDto> getByIds(Collection<UUID> comments) {
+        if(comments.isEmpty()){
+            return List.of();
+        }
+
+        return Objects.requireNonNull(this.webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("/list").build())
+                .bodyValue(comments)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<CommentDto>>() {
+                })
                 .block());
     }
 }

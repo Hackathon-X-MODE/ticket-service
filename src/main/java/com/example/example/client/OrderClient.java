@@ -1,5 +1,6 @@
 package com.example.example.client;
 
+import com.example.example.model.order.OrderWithMetaDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,20 +29,12 @@ public class OrderClient {
     }
 
 
-    public UUID getOrderIdByKey(String key) {
+    public OrderWithMetaDto getOrderById(UUID id) {
         return Objects.requireNonNull(this.webClient.get()
-                .uri(uriBuilder -> uriBuilder.path("/refs/{key}").build(key))
+                .uri(uriBuilder -> uriBuilder.path("/{orderId}").build(id))
                 .retrieve()
-                .bodyToMono(Dto.class)
-                .block()).id;
-    }
-
-    public void deleteKey(String key) {
-        this.webClient.delete()
-                .uri(uriBuilder -> uriBuilder.path("/refs/{key}").build(key))
-                .retrieve()
-                .toBodilessEntity()
-                .block();
+                .bodyToMono(OrderWithMetaDto.class)
+                .block());
     }
 
 

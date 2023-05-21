@@ -25,6 +25,8 @@ public class CommentDto {
 
     private double rate;
 
+    private String comment;
+
     @Schema(description = "Обновление")
     private Set<CommentType> commentTypesSet;
 
