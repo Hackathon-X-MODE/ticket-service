@@ -35,9 +35,9 @@ public class TicketStatsService {
     public CurrentTicketStats getStatus() {
         final var currentDate = LocalDateTime.now();
         return CurrentTicketStats.builder()
-                .open(this.orderTicketRepository.countAllByTicketStatusAndDeadlineLessThanEqual(TicketStatus.OPEN, currentDate))
+                .open(this.orderTicketRepository.countAllByTicketStatusAndDeadlineGreaterThanEqual(TicketStatus.OPEN, currentDate))
                 .pending(this.orderTicketRepository.countAllByTicketStatus(TicketStatus.PENDING))
-                .deadline(this.orderTicketRepository.countAllByTicketStatusAndDeadlineGreaterThanEqual(TicketStatus.OPEN, currentDate))
+                .deadline(this.orderTicketRepository.countAllByTicketStatusAndDeadlineLessThanEqual(TicketStatus.OPEN, currentDate))
                 .build();
     }
 }
