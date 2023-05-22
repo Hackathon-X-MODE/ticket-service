@@ -19,9 +19,9 @@ public class TicketStatusService {
 
     private static final Map<TicketStatus, Set<TicketStatus>> TICKET_STATUS_FLOW = Map.of(
             TicketStatus.OPEN, Set.of(TicketStatus.PENDING, TicketStatus.CANCELED),
-            TicketStatus.PENDING, Set.of(TicketStatus.CANCELED, TicketStatus.COMPLETED),
-            TicketStatus.CANCELED, Set.of(),
-            TicketStatus.COMPLETED, Set.of()
+            TicketStatus.PENDING, Set.of(TicketStatus.CANCELED, TicketStatus.COMPLETED, TicketStatus.OPEN),
+            TicketStatus.CANCELED, Set.of(TicketStatus.OPEN),
+            TicketStatus.COMPLETED, Set.of(TicketStatus.OPEN)
     );
 
     private final TicketOrderService ticketOrderService;

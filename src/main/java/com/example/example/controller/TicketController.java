@@ -2,9 +2,10 @@ package com.example.example.controller;
 
 import com.example.example.model.OrderTicketDto;
 import com.example.example.model.OrderTicketFilter;
-import com.example.example.model.OrderTicketRegister;
-import com.example.example.service.TicketOrderService;
+import com.example.example.model.comment.CommentDto;
 import com.example.example.service.TicketOrderReceiverService;
+import com.example.example.service.TicketOrderService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,12 +21,11 @@ public class TicketController {
 
     private final TicketOrderService ticketOrderService;
 
-    @PostMapping("/register")
+    @Operation(summary = "Уведомить сервис об изменениях в комментарии", description = "Для переданного комментария будет создан")
+    @PostMapping("/notify")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void register(
-            @RequestBody OrderTicketRegister orderTicketRegister
-    ) {
-        this.ticketOrderReceiverService.register(orderTicketRegister.getCommentId());
+    public void notify(@RequestBody CommentDto commentDto) {
+        this.ticketOrderReceiverService.notify(commentDto);
     }
 
 

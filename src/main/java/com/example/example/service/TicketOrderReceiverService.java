@@ -1,45 +1,48 @@
 package com.example.example.service;
 
-import com.example.example.client.CommentClient;
 import com.example.example.domain.CommentAttachmentOrderTicket;
 import com.example.example.domain.CommentStatus;
+import com.example.example.domain.TicketStatus;
+import com.example.example.model.SubmitTicketDto;
+import com.example.example.model.comment.CommentDto;
 import com.example.example.model.comment.CommentMood;
+import com.example.example.service.status.TicketStatusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class TicketOrderReceiverService {
 
-    private final CommentClient commentClient;
-
     private final TicketOrderService ticketOrderService;
 
+    private final TicketStatusService ticketStatusService;
+
     @Transactional
-    public void register(UUID commentId) {
-        log.info("Receive comment {}", commentId);
-        final var comment = this.commentClient.getById(commentId);
+    public void notify(CommentDto comment) {
+        log.info("Receive comment {}", comment.getId());
+        final var ticket = this.ticketOrderService.getDto(comment.getOrderId());
 
         if (comment.getMood() != CommentMood.NEGATIVE && comment.getRate() > 3) {
             log.info("Comment is more positive, ignore");
+            ticket.getComments().removeIf(commentAttachmentOrderTicket -> commentAttachmentOrderTicket.getCommentId().equals(comment.getId()));
             return;
         }
 
-        final var ticket = this.ticketOrderService.getDto(comment.getOrderId());
-
-        if (ticket.getComments().stream().noneMatch(commentTicket -> commentTicket.getCommentId().equals(commentId))) {
+        if (ticket.getComments().stream().noneMatch(commentTicket -> commentTicket.getCommentId().equals(comment.getId()))) {
             ticket.getComments().add(
                     new CommentAttachmentOrderTicket()
                             .setTicket(ticket)
                             .setStatus(CommentStatus.NOT_PROCESSED)
-                            .setCommentId(commentId)
+                            .setCommentId(comment.getId())
             );
-            log.info("Comment {} attached to {}", commentId, ticket.getId());
+            log.info("Comment {} attached to {}", comment.getId(), ticket.getId());
+            if (ticket.getTicketStatus() != TicketStatus.OPEN) {
+                ticketStatusService.changeStatus(ticket, SubmitTicketDto.builder().build(), TicketStatus.OPEN);
+            }
         }
     }
 }
