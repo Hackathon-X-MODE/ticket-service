@@ -28,7 +28,7 @@ public class TicketOrderReceiverService {
 
         if (comment.getMood() != CommentMood.NEGATIVE && comment.getRate() > 3) {
             log.info("Comment is more positive, ignore");
-            ticket.getComments().removeIf(commentAttachmentOrderTicket -> commentAttachmentOrderTicket.getCommentId().equals(comment.getId()));
+            ticket.getComments().removeIf(commentTicket -> commentTicket.getCommentId().equals(comment.getId()));
             return;
         }
 
