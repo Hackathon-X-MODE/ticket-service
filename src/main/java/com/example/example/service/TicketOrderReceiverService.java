@@ -24,13 +24,16 @@ public class TicketOrderReceiverService {
     @Transactional
     public void notify(CommentDto comment) {
         log.info("Receive comment {}", comment.getId());
-        final var ticket = this.ticketOrderService.getDto(comment.getOrderId());
 
         if (comment.getMood() != CommentMood.NEGATIVE && comment.getRate() > 3) {
             log.info("Comment is more positive, ignore");
-            ticket.getComments().removeIf(commentTicket -> commentTicket.getCommentId().equals(comment.getId()));
+            this.ticketOrderService.findByOrderId(comment.getOrderId()).ifPresent(
+                    ticket -> ticket.getComments().removeIf(commentTicket -> commentTicket.getCommentId().equals(comment.getId()))
+            );
             return;
         }
+
+        final var ticket = this.ticketOrderService.getDto(comment.getOrderId());
 
         if (ticket.getComments().stream().noneMatch(commentTicket -> commentTicket.getCommentId().equals(comment.getId()))) {
             ticket.getComments().add(

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -85,6 +86,11 @@ public class TicketOrderService {
         return data;
     }
 
+
+    @Transactional(readOnly = true)
+    public Optional<OrderTicketEntity> findByOrderId(UUID orderId) {
+        return this.orderTicketRepository.findByOrderId(orderId);
+    }
 
     @Transactional(readOnly = true)
     public OrderTicketEntity get(Long id) {
