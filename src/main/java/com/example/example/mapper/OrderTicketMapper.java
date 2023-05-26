@@ -23,10 +23,11 @@ public interface OrderTicketMapper {
     @Mapping(target = "commentOwnerProblemResolutions", source = "commentOwnerProblemResolutions")
     CommentAttachDto toDto(CommentAttachmentOrderTicket commentAttachmentOrderTicket);
 
-
-
+    @Mapping(target = "order", ignore = true)
     OrderTicketPageDto toPageDto(OrderTicketEntity orderTicketEntity);
 
+    @Mapping(target = "externalId", source = "externalId")
+    @Mapping(target = "vendor", ignore = true)
     OrderDto toPage(OrderWithMetaDto orderWithMetaDto);
 
 

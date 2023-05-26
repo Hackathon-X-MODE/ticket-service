@@ -15,7 +15,7 @@ public class OrderDto {
 
     private UUID id;
 
-    private String externalOrderId;
+    private String externalId;
 
     private UUID vendorId;
 
