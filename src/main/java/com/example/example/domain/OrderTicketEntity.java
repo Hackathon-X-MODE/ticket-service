@@ -39,6 +39,9 @@ public class OrderTicketEntity {
     @Column(name = "deadline")
     private LocalDateTime deadline;
 
+    @Column(name = "endDate")
+    private LocalDateTime endDate;
+
     @CreationTimestamp
     @Column(name = "create_date")
     private LocalDateTime createDate;
