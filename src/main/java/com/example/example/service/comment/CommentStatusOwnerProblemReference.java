@@ -27,11 +27,31 @@ public class CommentStatusOwnerProblemReference {
                     GOT_ORDER,
                     PRODUCT,
                     DELIVERY,
-                    NOTIFICATION
+                    NOTIFICATION,
+                    PAY_ORDER,
+                    PACKING,
+                    COMPLETENESS,
+                    QUALITY,
+                    DESCRIPTION,
+                    DEADLINE,
+                    COAST_DELIVERY,
+                    DELIVERY_GUY_REPORT,
+                    CONFIRM_NOTIFICATION,
+                    DELIVERY_NOTIFICATION,
+                    READY_NOTIFICATION
             ),
             POSTAMAT_REF, Set.of(
                     GETTING_ORDER,
-                    GOT_ORDER
+                    GOT_ORDER,
+                    POST_BOX,
+                    SELECT_POSTAMAT,
+                    SEARCH_POSTAMAT_AT_HOUSE,
+                    PAY_ORDER,
+                    OPEN_POSTAMAT,
+                    WORK_POSTAMAT,
+                    LOCATION_POSTAMAT,
+                    VIEW_POSTAMAT
+
             )
     );
 
