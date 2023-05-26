@@ -5,14 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Component
 public class OrderClient {
@@ -35,6 +36,17 @@ public class OrderClient {
                 .retrieve()
                 .bodyToMono(OrderWithMetaDto.class)
                 .block());
+    }
+
+
+    public Map<UUID, OrderWithMetaDto> getOrders(Collection<UUID> ids) {
+        return Objects.requireNonNull(this.webClient.post()
+                .uri(uriBuilder -> uriBuilder.path("/list").build())
+                .bodyValue(ids)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<OrderWithMetaDto>>() {
+                })
+                .block()).stream().collect(Collectors.toMap(OrderWithMetaDto::getId, Function.identity()));
     }
 
 

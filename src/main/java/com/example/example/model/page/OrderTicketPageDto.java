@@ -1,6 +1,7 @@
-package com.example.example.model;
+package com.example.example.model.page;
 
 import com.example.example.domain.TicketStatus;
+import com.example.example.model.CommentAttachDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,19 +9,18 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderTicketDto {
+public class OrderTicketPageDto {
 
     private Long id;
 
     private TicketStatus ticketStatus;
 
-    private UUID orderId;
+    private OrderDto order;
 
     private List<CommentAttachDto> comments;
 

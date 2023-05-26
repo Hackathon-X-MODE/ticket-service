@@ -1,5 +1,7 @@
 package com.example.example.service;
 
+import com.example.example.client.OrderClient;
+import com.example.example.client.VendorClient;
 import com.example.example.domain.CommentStatus;
 import com.example.example.domain.OrderTicketEntity;
 import com.example.example.domain.TicketStatus;
@@ -8,6 +10,9 @@ import com.example.example.mapper.OrderTicketMapper;
 import com.example.example.model.CommentAttachDto;
 import com.example.example.model.OrderTicketDto;
 import com.example.example.model.OrderTicketFilter;
+import com.example.example.model.order.OrderWithMetaDto;
+import com.example.example.model.page.OrderTicketPageDto;
+import com.example.example.model.vendor.VendorDto;
 import com.example.example.repository.OrderTicketRepository;
 import com.example.example.service.comment.CommentStatusOwnerProblemReference;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -34,6 +40,10 @@ public class TicketOrderService {
     private final OrderTicketRepository orderTicketRepository;
 
     private final CommentStatusOwnerProblemReference commentStatusOwnerProblemReference;
+
+    private final VendorClient vendorClient;
+
+    private final OrderClient orderClient;
 
 
     @Transactional
@@ -57,12 +67,29 @@ public class TicketOrderService {
 
 
     @Transactional(readOnly = true)
-    public Page<OrderTicketDto> getAll(OrderTicketFilter filter, Pageable pageable) {
+    public Page<OrderTicketPageDto> getAll(OrderTicketFilter filter, Pageable pageable) {
         final var page = this.orderTicketRepository.filter(filter, pageable);
 
+        final var result = page.stream().toList();
+
+        final var orders = this.orderClient.getOrders(
+                result.stream().map(OrderTicketEntity::getOrderId).collect(Collectors.toSet())
+        );
+
+        final var vendors = this.vendorClient.getVendorsByIds(
+                orders.values().stream().map(OrderWithMetaDto::getVendorId).collect(Collectors.toSet())
+        ).stream().collect(Collectors.toMap(VendorDto::getId, Function.identity()));
+
+
         return new PageImpl<>(
-                page.stream().map(this.orderTicketMapper::toDto)
-                        .toList(),
+                result.stream().map(r -> {
+                    final var dto = this.orderTicketMapper.toPageDto(r);
+                    dto.setOrder(this.orderTicketMapper.toPage(orders.get(r.getOrderId())));
+                    dto.getOrder().setVendor(
+                            this.orderTicketMapper.toPageVendor(vendors.get(dto.getOrder().getVendorId()))
+                    );
+                    return dto;
+                }).toList(),
                 pageable, page.getTotalElements()
         );
     }

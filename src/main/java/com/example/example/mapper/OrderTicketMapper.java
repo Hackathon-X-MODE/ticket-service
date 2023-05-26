@@ -5,6 +5,10 @@ import com.example.example.domain.CommentAttachmentOrderTicket;
 import com.example.example.domain.OrderTicketEntity;
 import com.example.example.model.CommentAttachDto;
 import com.example.example.model.OrderTicketDto;
+import com.example.example.model.order.OrderWithMetaDto;
+import com.example.example.model.page.OrderDto;
+import com.example.example.model.page.OrderTicketPageDto;
+import com.example.example.model.page.VendorDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -21,4 +25,10 @@ public interface OrderTicketMapper {
 
 
 
+    OrderTicketPageDto toPageDto(OrderTicketEntity orderTicketEntity);
+
+    OrderDto toPage(OrderWithMetaDto orderWithMetaDto);
+
+
+    VendorDto toPageVendor(com.example.example.model.vendor.VendorDto vendorDto);
 }

@@ -2,6 +2,7 @@ package com.example.example.controller;
 
 import com.example.example.model.OrderTicketDto;
 import com.example.example.model.OrderTicketFilter;
+import com.example.example.model.page.OrderTicketPageDto;
 import com.example.example.service.TicketOrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,7 +22,7 @@ public class TicketController {
 
 
     @GetMapping
-    public Page<OrderTicketDto> get(
+    public Page<OrderTicketPageDto> get(
             OrderTicketFilter filter,
             Pageable pageable) {
         return this.ticketOrderService.getAll(filter, pageable);
