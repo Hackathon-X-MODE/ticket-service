@@ -44,7 +44,8 @@ public interface OrderTicketRepository extends JpaRepository<OrderTicketEntity, 
     @Query(value = """
             select count(*), create_date\\:\\:timestamp\\:\\:date from order_ticket
             where create_date >= :fromDate
-            group by create_date\\:\\:timestamp\\:\\:date;
+            group by create_date\\:\\:timestamp\\:\\:date
+            order by create_date desc;
             """, nativeQuery = true)
     List<Tuple> getPerDays(@Param("fromDate") LocalDate fromDate);
 
